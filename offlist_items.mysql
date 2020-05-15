@@ -1,0 +1,6 @@
+select id, dancer_claim_id, category, refund, amount, description, start_id, start_stamp, end_id,
+	if( timestampdiff( minute, start_stamp, end_stamp)/60 > amount/25, timestampadd( minute, 60*amount/25, start_stamp), end_stamp) end_time
+	into outfile "/tmp/offlist_items.csv" fields terminated by ',' optionally enclosed by '"' lines terminated by "\n" 
+	from dbi_dancer_claim_item 
+	where category='offlist' and refund=0 and start_stamp < end_stamp and start_stamp > '2013-05-11'
+	order by start_stamp, id ;
